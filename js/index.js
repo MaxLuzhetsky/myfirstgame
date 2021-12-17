@@ -145,7 +145,7 @@ function draw() {
  ctx.fillStyle = "#ffffff";
  ctx.fillText("Score: "+score, 8, 20); 
  for ( let i = 0 ; i < enemies.length ; i++ ){
-    ctx.drawImage(enemy , enemies[i].x + 100 , enemies[i].y)
+    ctx.drawImage(enemy , enemies[i].x  , enemies[i].y)
     enemies[i].x-= 2
 
     if (enemies[i].x === spawnTrigger){
