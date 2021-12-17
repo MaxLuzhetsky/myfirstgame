@@ -14,7 +14,7 @@ ship.src = "img/myship.png";
 bg.src = "img/milky.jpg";
 enemy.src= "img/fighter.png";
 shot.src = "img/laserBlue.png";
-
+ //hello me 
 shotLazer.src = "audio/lazerShot.wav"
 shotLazer.autoplay= true
 music.src = "audio/cosm.mp3"
