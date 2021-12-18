@@ -242,12 +242,13 @@ function draw() {
 
             }
 
-
+ 
         }
         function shotB() {
             new vorojiiBullet();
         }
-        setInterval(shotB, 1000)
+        vorojiiBullets.forEach(vorojiiBullet => bullet.draw());
+        setTimeout(shotB, 500)
 
 
 
@@ -276,10 +277,10 @@ function draw() {
                 }
 
             }
-            if ( bullets[j].x > spawnTrigger){
-                bullets.splice(j , 1);
+            if (bullets[j].x > spawnTrigger) {
+                bullets.splice(j, 1);
             }
-            
+
         }
         if (xPos <= enemies[i].x + enemy.width
             && xPos + ship.width >= enemies[i].x
