@@ -30,6 +30,7 @@ let downPressed = false;
 let rightPressed = false;
 let leftPressed = false;
 let pressedSpace = false;
+let reloadButton = false;
 let cvertcanvasa = canvasGame.width / 6
 let spawnTrigger = canvasGame.width - cvertcanvasa
 let score = 0
@@ -84,6 +85,9 @@ function keyDownHandler(e) {
         w_delay = 100
 
     }
+    else if (e.keyCode == 13) {
+        reloadButton = true;
+    }
 }
 
 function keyUpHandler(e) {
@@ -103,6 +107,9 @@ function keyUpHandler(e) {
         pressedSpace = false;
         w_delay = 0;
     }
+    else if (e.keyCode == 13) {
+        reloadButton = false;
+    }
 }
 
 
@@ -120,6 +127,7 @@ class Bullet {
         if (this.x < 0 && this.x > canvas.width) {
             bullets.splice(bullets.indexOf(this));
         }
+
 
         // fillRect не требует openPath!
 
@@ -170,23 +178,9 @@ function draw() {
     ctx.drawImage(bg, 0, 0);
     ctx.drawImage(ship, xPos, yPos)
 
-    //Cчет .........................................................................................
-    
-    ctx.font = "16px Trebuchet MS";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Score: " + score, 8, 20);
 
-    //Game Over ...................................................................................
-    if ( playerHP === 0){
-
-     xPos = 1000
-     yPos = 1000
-    ctx.font = "40px Arial"
-    ctx.fillStyle = "#ffffff"
-    ctx.fillText("GAME OVER" , canvasGame.width/2 - 150,canvasGame.height/2)
-    }
     //Спавн Противников ............................................................................
-    
+
 
 
     for (let i = 0; i < enemies.length; i++) {
@@ -211,6 +205,7 @@ function draw() {
         }
 
 
+        //Враг диспавнится после конца экрана.......................................................................
         if ((enemies[i].x + 50) < 0) {
             enemies.splice(i, 1)
 
@@ -281,18 +276,46 @@ function draw() {
                 }
 
             }
+            if ( bullets[j].x > spawnTrigger){
+                bullets.splice(j , 1);
+            }
             
         }
         if (xPos <= enemies[i].x + enemy.width
             && xPos + ship.width >= enemies[i].x
             && yPos <= enemies[i].y + enemy.height
-            && yPos + ship.height >= enemies[i].y){
-                enemies.splice(i, 1)
-                score += 100
-                playerHP -= 50
-            }
-          
-        
+            && yPos + ship.height >= enemies[i].y) {
+            enemies.splice(i, 1)
+            score += 100
+            playerHP -= 50
+        }
+
+
+    }
+    //Cчет .........................................................................................
+
+    ctx.font = "16px Trebuchet MS";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Score: " + score, 10, 50);
+
+    //Цель.........................................................................................
+    ctx.font = "16px Trebuchet MS";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Gain 10000 point", 8, 20);
+
+    //Game Over ...................................................................................
+    if (playerHP === 0) {
+
+        xPos = 1000
+        yPos = 1000
+        ctx.font = "40px Arial"
+        ctx.fillStyle = "#ffffff"
+        ctx.fillText("GAME OVER", canvasGame.width / 2 - 150, canvasGame.height / 2)
+
+        ctx.font = "24px Arial"
+        ctx.fillStyle = "#ffffff"
+        ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
+
     }
 
 
@@ -319,6 +342,10 @@ function draw() {
 
 
     }
+    if (reloadButton && playerHP === 0) {
+        location.reload();
+    }
+
 
 }
 
