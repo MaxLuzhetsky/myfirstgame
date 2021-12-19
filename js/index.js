@@ -42,6 +42,8 @@ let fighterHP = 20
 let enemyX = canvasGame.width
 let enemyY = canvasGame.height / 2
 
+
+
 let randomEnemyY = Math.floor(Math.random() * (canvasGame.height - 50))
 
 let enemies = [];
@@ -124,7 +126,7 @@ class Bullet {
     }
     draw() {
         this.x += 4;
-        if (this.x < 0 && this.x > canvas.width) {
+        if (this.x < 0 && this.x > canvasGame.width) {
             bullets.splice(bullets.indexOf(this));
         }
 
@@ -189,76 +191,11 @@ function draw() {
 
         enemies[i].x -= 2
 
-
-        if (enemies[i].x === spawnTrigger) {
-            enemies.push({
-                x: enemyX,
-                y: Math.floor(Math.random() * (canvasGame.height - 50)),
-                hp: fighterHP
-            }
-            );
-            if (enemies[i].x > godmoddistanse) {
-                enemies[i].hp = 200
-            } else if (enemies[i].x < godmoddistanse) {
-                enemies[i].hp = 20
-            }
-        }
-
-
         //Враг диспавнится после конца экрана.......................................................................
         if ((enemies[i].x + 50) < 0) {
             enemies.splice(i, 1)
 
         }
-
-
-        let shotPosX = enemies[i].x - 50
-        let shotPosY = enemies[i].y + 35
-
-        enemyBullets[0] = {
-            x: shotPosX,
-            y: shotPosY
-        }
-
-
-        //Выстрел противника .................................................................................
-
-        const vorojiiBullets = [];
-        class vorojiiBullet {
-            constructor() {
-                this.x = enemies[i].x - 50;
-                this.y = enemies[i].y + 35;
-                vorojiiBullets.push(this);
-            }
-            draw() {
-                this.x -= 5;
-                if (this.x < 0 && this.x > canvas.width) {
-                    vorojiiBullets.splice(vorojiiBullets.indexOf(this));
-                }
-
-                // fillRect не требует openPath!
-
-                ctx.drawImage(enBullet, this.x - 10, this.y, 54, 9)
-
-            }
-
- 
-        }
-        function shotB() {
-            new vorojiiBullet();
-        }
-        vorojiiBullets.forEach(vorojiiBullet => bullet.draw());
-        setTimeout(shotB, 500)
-
-
-
-
-
-
-
-
-
-
 
         //Колизия ...................................................................................
         for (let j = 0; j < bullets.length; j++) {
@@ -282,6 +219,9 @@ function draw() {
             }
 
         }
+        //Колизия вражеского выстрела ..............................................................................
+
+        //Колизия кораблей .........................................................................................
         if (xPos <= enemies[i].x + enemy.width
             && xPos + ship.width >= enemies[i].x
             && yPos <= enemies[i].y + enemy.height
@@ -291,6 +231,25 @@ function draw() {
             playerHP -= 50
         }
 
+
+
+    }
+
+    //Выстрел противника .................................................................................
+
+    for (let i = 0; i < enemies.length; i++) {
+        for (let b = 0; b < enemyBullets.length; b++) {
+
+            shotPosX = enemies[i].x - 50
+            shotPosY = enemies[i].y + 35
+
+
+            ctx.drawImage(enBullet, enemyBullets[b].x, enemyBullets[b].y)
+            enemyBullets[b].x -= 1
+            if (enemyBullets[b].x < 0 && enemyBullets[b].x > canvasGame.width) {
+                enemyBullets.splice(b, 1);
+            }
+        }
 
     }
     //Cчет .........................................................................................
@@ -317,6 +276,13 @@ function draw() {
         ctx.fillStyle = "#ffffff"
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
 
+    }
+    if (score === 10000){
+        xPos += 10
+        playerHP = 1000
+        ctx.font = "40px Arial"
+        ctx.fillStyle = "#ffffff"
+        ctx.fillText("MISSION COMPLETE", canvasGame.width / 2 - 150, canvasGame.height / 2)
     }
 
 
@@ -349,9 +315,43 @@ function draw() {
 
 
 }
+for (let b = 0; b < enemyBullets.length; b++) {
+    if (enemyBullets[b].x >= xPos + ship.width
+        && enemyBullets[b].x + enBullet.width <= xPos
+        && enemyBullets[b].y >= yPos + ship.height
+        && enemyBullets[b].y + enBullet.height <= yPos) {
+            enemyBullets.splice(b , 1)
+        playerHP
+    }
 
+}
 
-
+// Интервалы ...........................................................................................................
 
 setTimeout(keyDownHandler, 1)
 setInterval(draw, 10);
+setInterval(function () {
+
+    enemies.push({
+        x: enemyX,
+        y: Math.floor(Math.random() * (canvasGame.height - 50)),
+        hp: fighterHP
+    }
+    );
+
+}, 1000)
+setInterval(function () {
+    for (let i = 0; i < enemies.length; i++) {
+        shotPosX = enemies[i].x - 50
+        shotPosY = enemies[i].y + 35
+
+
+        enemyBullets.push({
+            x: shotPosX,
+            y: shotPosY,
+
+        })
+    }
+}, 2000)
+
+
