@@ -7,17 +7,21 @@ let bg = new Image();
 let enemy = new Image();
 let shot = new Image();
 let enBullet = new Image();
+let heal = new Image();
+let spaceBg = new Image();
+    
 
 let shotLazer = new Audio();
 let music = new Audio();
 
 let w_delay = 0;
-
+heal.src = "img/heart.png"
 ship.src = "img/myship.png";
 bg.src = "img/milky.jpg";
 enemy.src = "img/fighter.png";
 shot.src = "img/laserBlue.png";
 enBullet.src = "img/laserRed.png"
+spaceBg.src = "img/spacebg/0.gif";
 //hello me 
 shotLazer.src = "audio/lazerShot.wav"
 shotLazer.autoplay = true
@@ -35,6 +39,8 @@ let cvertcanvasa = canvasGame.width / 6
 let spawnTrigger = canvasGame.width - cvertcanvasa
 let score = 0
 let godmoddistanse = canvasGame.width - 50
+let heartX = canvasGame.width
+let heartY = Math.floor(Math.random() * canvasGame.height)
 
 let playerHP = 100
 let fighterHP = 20
@@ -48,9 +54,13 @@ let randomEnemyY = Math.floor(Math.random() * (canvasGame.height - 50))
 
 let enemies = [];
 let enemyBullets = [];
+let healHeart = []
 
 //...............................................................................................................
-
+healHeart[0] = {
+    x: heartX,
+    y: heartY
+}
 enemies[0] = {
     x: enemyX,
     y: enemyY,
@@ -177,7 +187,9 @@ function spawnEnemy(){
 function draw() {
     music.play();
     music.volume = 0.2;
-    ctx.drawImage(bg, 0, 0);
+    ctx.drawImage(bg , 0 , 0)
+    //...............
+    
     ctx.drawImage(ship, xPos, yPos)
 
 
@@ -222,10 +234,10 @@ function draw() {
         //Колизия вражеского выстрела ..............................................................................
 
         //Колизия кораблей .........................................................................................
-        if (xPos <= enemies[i].x + enemy.width
-            && xPos + ship.width >= enemies[i].x
-            && yPos <= enemies[i].y + enemy.height
-            && yPos + ship.height >= enemies[i].y) {
+        if (xPos <= enemies[i].x + enemy.width - 10
+            && xPos + ship.width - 10 >= enemies[i].x
+            && yPos <= enemies[i].y + enemy.height - 10
+            && yPos + ship.height - 10 >= enemies[i].y) {
             enemies.splice(i, 1)
             score += 100
             playerHP -= 50
@@ -249,22 +261,50 @@ function draw() {
             if (enemyBullets[b].x < 0 && enemyBullets[b].x > canvasGame.width) {
                 enemyBullets.splice(b, 1);
             }
+            if (enemyBullets[b].x <= xPos + ship.width - 10
+                && enemyBullets[b].x + enBullet.width - 10 >= xPos
+                && enemyBullets[b].y <= yPos + ship.height - 10
+                && enemyBullets[b].y + enBullet.height - 10 >= yPos) {
+                enemyBullets.splice(b, 1)
+                playerHP -= 10
+            }
         }
 
+
+    }
+    for (let h = 0; h < healHeart.length; h++) {
+        ctx.drawImage(heal, healHeart[h].x, healHeart[h].y)
+        healHeart[h].x -= 3
+
+        if (healHeart[h].x <= xPos + ship.width - 10
+            && healHeart[h].x + enBullet.width - 10 >= xPos
+            && healHeart[h].y <= yPos + ship.height - 10
+            && healHeart[h].y + enBullet.height - 10 >= yPos) {
+
+            healHeart.splice(h, 1)
+            playerHP += 25
+
+        }
     }
     //Cчет .........................................................................................
 
     ctx.font = "16px Trebuchet MS";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("Score: " + score, 10, 50);
+    ctx.fillText("Score: " + score, 830, 50);
 
     //Цель.........................................................................................
     ctx.font = "16px Trebuchet MS";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("Gain 10000 point", 8, 20);
+    ctx.fillText("Gain 10000 point", 830, 20);
+    //HP ..........................................................................................
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("HP " + playerHP, 10, 20)
+
+
 
     //Game Over ...................................................................................
-    if (playerHP === 0) {
+    if (playerHP <= 0) {
 
         xPos = 1000
         yPos = 1000
@@ -277,7 +317,7 @@ function draw() {
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
 
     }
-    if (score === 10000){
+    if (score === 10000) {
         xPos += 10
         playerHP = 1000
         ctx.font = "40px Arial"
@@ -309,22 +349,13 @@ function draw() {
 
 
     }
-    if (reloadButton && playerHP === 0) {
+    if (reloadButton && playerHP <= 0) {
         location.reload();
     }
 
 
 }
-for (let b = 0; b < enemyBullets.length; b++) {
-    if (enemyBullets[b].x >= xPos + ship.width
-        && enemyBullets[b].x + enBullet.width <= xPos
-        && enemyBullets[b].y >= yPos + ship.height
-        && enemyBullets[b].y + enBullet.height <= yPos) {
-            enemyBullets.splice(b , 1)
-        playerHP
-    }
 
-}
 
 // Интервалы ...........................................................................................................
 
@@ -353,5 +384,11 @@ setInterval(function () {
         })
     }
 }, 2000)
+setInterval(function () {
+    healHeart.push({
+        x: heartX,
+        y: Math.floor(Math.random() * (canvasGame.height - 50))
+    })
+}, 30000)
 
 
