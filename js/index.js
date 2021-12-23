@@ -9,7 +9,10 @@ let shot = new Image();
 let enBullet = new Image();
 let heal = new Image();
 let spaceBg = new Image();
-    
+let bossShip = new Image();
+let bossSpeedX = 1
+let bossSpeedY = 1
+
 
 let shotLazer = new Audio();
 let music = new Audio();
@@ -22,6 +25,7 @@ enemy.src = "img/fighter.png";
 shot.src = "img/laserBlue.png";
 enBullet.src = "img/laserRed.png"
 spaceBg.src = "img/spacebg/0.gif";
+bossShip.src = "img/titan.png"
 //hello me 
 shotLazer.src = "audio/lazerShot.wav"
 shotLazer.autoplay = true
@@ -35,7 +39,7 @@ let rightPressed = false;
 let leftPressed = false;
 let pressedSpace = false;
 let reloadButton = false;
-let cvertcanvasa = canvasGame.width / 6
+let cvertcanvasa = canvasGame.width / 4
 let spawnTrigger = canvasGame.width - cvertcanvasa
 let score = 0
 let godmoddistanse = canvasGame.width - 50
@@ -44,11 +48,15 @@ let heartY = Math.floor(Math.random() * canvasGame.height)
 
 let playerHP = 100
 let fighterHP = 20
+let bossHP = 500
 
 let enemyX = canvasGame.width
 let enemyY = canvasGame.height / 2
 
+let bossX = canvasGame.width
+let bossY = canvasGame.height - 400
 
+let spawnInterval = 2000
 
 let randomEnemyY = Math.floor(Math.random() * (canvasGame.height - 50))
 
@@ -187,9 +195,9 @@ function spawnEnemy(){
 function draw() {
     music.play();
     music.volume = 0.2;
-    ctx.drawImage(bg , 0 , 0)
+    ctx.drawImage(bg, 0, 0)
     //...............
-    
+
     ctx.drawImage(ship, xPos, yPos)
 
 
@@ -221,7 +229,7 @@ function draw() {
                 enemies[i].hp -= 10
                 if (enemies[i].hp === 0) {
                     enemies.splice(i, 1)
-                    score += 100
+                    score += 1000
 
                 }
 
@@ -229,6 +237,14 @@ function draw() {
             if (bullets[j].x > spawnTrigger) {
                 bullets.splice(j, 1);
             }
+            if (bullets[j].x <= bossX + bossShip.width
+                && bullets[j].x + shot.width >= bossX
+                && bullets[j].y <= bossY + bossShip.height
+                && bullets[j].y + shot.height >= bossY) {
+                bullets.splice(j, 1);
+                bossHP -= 10
+            }
+
 
         }
         //Колизия вражеского выстрела ..............................................................................
@@ -239,7 +255,7 @@ function draw() {
             && yPos <= enemies[i].y + enemy.height - 10
             && yPos + ship.height - 10 >= enemies[i].y) {
             enemies.splice(i, 1)
-            score += 100
+            score += 1000
             playerHP -= 50
         }
 
@@ -286,6 +302,31 @@ function draw() {
 
         }
     }
+    if (score >= 5000) {
+
+        ctx.drawImage(bossShip, bossX, bossY)
+        if (bossHP >= 0) {
+            ctx.font = "16px Trebuchet MS";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("TITAN: " + bossHP, canvasGame.width / 2, 25);
+           
+        }
+        bossX -= bossSpeedX
+        if (bossX === (canvasGame.width - bossShip.width)) {
+            bossSpeedX = 0
+            bossY += bossSpeedY
+            if (bossY >= canvasGame.height - bossShip.height) {
+                bossSpeedY = -1
+            } else if (bossY <= 0) {
+                bossSpeedY = 1
+            }
+        }
+        spawnInterval = 5000
+        if ( bossHP === 0){
+            bossX = 1000
+            bossY = 1000
+        }
+    }
     //Cчет .........................................................................................
 
     ctx.font = "16px Trebuchet MS";
@@ -317,7 +358,7 @@ function draw() {
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
 
     }
-    if (score === 10000) {
+    if (score === 10000 && bossHP === 0) {
         xPos += 10
         playerHP = 1000
         ctx.font = "40px Arial"
@@ -383,7 +424,7 @@ setInterval(function () {
 
         })
     }
-}, 2000)
+}, spawnInterval)
 setInterval(function () {
     healHeart.push({
         x: heartX,
