@@ -305,13 +305,15 @@ function draw() {
     if (score >= 5000) {
 
         ctx.drawImage(bossShip, bossX, bossY)
+        bossX -= bossSpeedX
+
         if (bossHP >= 0) {
             ctx.font = "16px Trebuchet MS";
             ctx.fillStyle = "#ffffff";
             ctx.fillText("TITAN: " + bossHP, canvasGame.width / 2, 25);
-           
+
         }
-        bossX -= bossSpeedX
+        
         if (bossX === (canvasGame.width - bossShip.width)) {
             bossSpeedX = 0
             bossY += bossSpeedY
@@ -322,7 +324,7 @@ function draw() {
             }
         }
         spawnInterval = 5000
-        if ( bossHP === 0){
+        if (bossHP === 0) {
             bossX = 1000
             bossY = 1000
         }
@@ -358,7 +360,7 @@ function draw() {
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
 
     }
-    if (score === 10000 && bossHP === 0) {
+    if (score >= 10000 && bossHP === 0) {
         xPos += 10
         playerHP = 1000
         ctx.font = "40px Arial"
