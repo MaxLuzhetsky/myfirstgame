@@ -10,6 +10,7 @@ let enBullet = new Image();
 let heal = new Image();
 let spaceBg = new Image();
 let bossShip = new Image();
+
 let bossSpeedX = 1
 let bossSpeedY = 1
 
@@ -25,7 +26,8 @@ enemy.src = "img/fighter.png";
 shot.src = "img/laserBlue.png";
 enBullet.src = "img/laserRed.png"
 spaceBg.src = "img/spacebg/0.gif";
-bossShip.src = "img/titan.png"
+bossShip.src = "img/Titan.png"
+
 //hello me 
 shotLazer.src = "audio/lazerShot.wav"
 shotLazer.autoplay = true
