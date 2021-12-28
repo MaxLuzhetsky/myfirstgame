@@ -9,7 +9,7 @@ let shot = new Image();
 let enBullet = new Image();
 let heal = new Image();
 let spaceBg = new Image();
-let bossShip = new Image();
+let boss = new Image();
 
 let bossSpeedX = 1
 let bossSpeedY = 1
@@ -26,7 +26,7 @@ enemy.src = "img/fighter.png";
 shot.src = "img/laserBlue.png";
 enBullet.src = "img/laserRed.png"
 spaceBg.src = "img/spacebg/0.gif";
-bossShip.src = "img/Titan.png"
+boss.src = "img/titan.png"
 
 //hello me 
 shotLazer.src = "audio/lazerShot.wav"
@@ -239,9 +239,9 @@ function draw() {
             if (bullets[j].x > spawnTrigger) {
                 bullets.splice(j, 1);
             }
-            if (bullets[j].x <= bossX + bossShip.width
+            if (bullets[j].x <= bossX + boss.width
                 && bullets[j].x + shot.width >= bossX
-                && bullets[j].y <= bossY + bossShip.height
+                && bullets[j].y <= bossY + boss.height
                 && bullets[j].y + shot.height >= bossY) {
                 bullets.splice(j, 1);
                 bossHP -= 10
@@ -306,7 +306,7 @@ function draw() {
     }
     if (score >= 5000) {
 
-        ctx.drawImage(bossShip, bossX, bossY)
+        ctx.drawImage(boss, bossX, bossY)
         bossX -= bossSpeedX
 
         if (bossHP >= 0) {
@@ -316,10 +316,10 @@ function draw() {
 
         }
         
-        if (bossX === (canvasGame.width - bossShip.width)) {
+        if (bossX === (canvasGame.width - boss.width)) {
             bossSpeedX = 0
             bossY += bossSpeedY
-            if (bossY >= canvasGame.height - bossShip.height) {
+            if (bossY >= canvasGame.height - boss.height) {
                 bossSpeedY = -1
             } else if (bossY <= 0) {
                 bossSpeedY = 1
