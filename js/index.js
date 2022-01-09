@@ -10,6 +10,11 @@ let enBullet = new Image();
 let heal = new Image();
 let spaceBg = new Image();
 let boss = new Image();
+let hpIcon = new Image();
+let lvIcon = new Image();
+
+
+
 
 let bossSpeedX = 1
 let bossSpeedY = 1
@@ -27,6 +32,9 @@ shot.src = "img/laserBlue.png";
 enBullet.src = "img/laserRed.png"
 spaceBg.src = "img/spacebg/0.gif";
 boss.src = "img/titan.png"
+hpIcon.src = "img/heart1.png"
+lvIcon.src = "img/lv.png"
+
 
 //hello me 
 shotLazer.src = "audio/lazerShot.wav"
@@ -47,10 +55,12 @@ let score = 0
 let godmoddistanse = canvasGame.width - 50
 let heartX = canvasGame.width
 let heartY = Math.floor(Math.random() * canvasGame.height)
+let playerLv = 3
+let mssn = "Gain 5000 points"
 
 let playerHP = 100
 let fighterHP = 20
-let bossHP = 500
+let bossHP = 1000
 
 let enemyX = canvasGame.width
 let enemyY = canvasGame.height / 2
@@ -231,7 +241,7 @@ function draw() {
                 enemies[i].hp -= 10
                 if (enemies[i].hp === 0) {
                     enemies.splice(i, 1)
-                    score += 1000
+                    score += 100
 
                 }
 
@@ -257,7 +267,7 @@ function draw() {
             && yPos <= enemies[i].y + enemy.height - 10
             && yPos + ship.height - 10 >= enemies[i].y) {
             enemies.splice(i, 1)
-            score += 1000
+            score += 100
             playerHP -= 50
         }
 
@@ -305,17 +315,18 @@ function draw() {
         }
     }
     if (score >= 5000) {
-
-        ctx.drawImage(boss , bossX , bossY)
+        mssn = "Defeat the Titan"
+        ctx.drawImage(boss, bossX, bossY)
         bossX -= bossSpeedX
-
+        
+            
         if (bossHP >= 0) {
             ctx.font = "16px Trebuchet MS";
             ctx.fillStyle = "#ffffff";
             ctx.fillText("TITAN:  " + bossHP, canvasGame.width / 2, 25);
 
         }
-        
+
         if (bossX === (canvasGame.width - boss.width)) {
             bossSpeedX = 0
             bossY += bossSpeedY
@@ -327,8 +338,9 @@ function draw() {
         }
         spawnInterval = 5000
         if (bossHP === 0) {
-            bossX = 1000
-            bossY = 1000
+            bossSpeedX = -1
+            ctx.clearRect(canvasGame.width / 2, 25, 20, 10)
+            score += 5000
         }
     }
     //Cчет .........................................................................................
@@ -340,17 +352,26 @@ function draw() {
     //Цель.........................................................................................
     ctx.font = "16px Trebuchet MS";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("Gain 10000 point", 830, 20);
+    ctx.fillText(mssn, 830, 20);
     //HP ..........................................................................................
     ctx.font = "20px Arial";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText("HP " + playerHP, 10, 20)
+    ctx.drawImage(hpIcon, 10, 0)
+    ctx.fillText("- " + playerHP, 50, 25)
+    ctx.drawImage(lvIcon, 100, 0)
+    ctx.fillText("- " + playerLv, 150, 25)
 
 
 
     //Game Over ...................................................................................
-    if (playerHP <= 0) {
+    if (playerHP < 0) {
+       playerLv -= 1
+       playerHP = 100
+       xPos = 10
+       yPos = canvasGame.height / 2
 
+    }
+    if(playerLv <= 0){
         xPos = 1000
         yPos = 1000
         ctx.font = "40px Arial"
@@ -360,7 +381,6 @@ function draw() {
         ctx.font = "24px Arial"
         ctx.fillStyle = "#ffffff"
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
-
     }
     if (score >= 10000 && bossHP === 0) {
         xPos += 10
