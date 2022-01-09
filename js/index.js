@@ -312,7 +312,7 @@ function draw() {
         if (bossHP >= 0) {
             ctx.font = "16px Trebuchet MS";
             ctx.fillStyle = "#ffffff";
-            ctx.fillText("TITAN: " + bossHP, canvasGame.width / 2, 25);
+            ctx.fillText("TITAN:  " + bossHP, canvasGame.width / 2, 25);
 
         }
         
