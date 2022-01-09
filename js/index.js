@@ -32,7 +32,7 @@ boss.src = "img/titan.png"
 shotLazer.src = "audio/lazerShot.wav"
 shotLazer.autoplay = true
 music.src = "audio/cosm.mp3"
-
+//..................................................................................
 let xPos = 10;
 let yPos = canvasGame.height / 2;
 let upPressed = false;
@@ -306,7 +306,7 @@ function draw() {
     }
     if (score >= 5000) {
 
-        ctx.drawImage(boss, bossX, bossY)
+        ctx.drawImage(boss , bossX , bossY)
         bossX -= bossSpeedX
 
         if (bossHP >= 0) {
