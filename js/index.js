@@ -12,6 +12,9 @@ let spaceBg = new Image();
 let boss = new Image();
 let hpIcon = new Image();
 let lvIcon = new Image();
+let bossB1 = new Image();
+let bossB2 = new Image();
+
 
 
 
@@ -34,6 +37,8 @@ spaceBg.src = "img/spacebg/0.gif";
 boss.src = "img/titan.png"
 hpIcon.src = "img/heart1.png"
 lvIcon.src = "img/lv.png"
+bossB1.src = "img/bossshot11.png"
+bossB2.src = "img/bossshot22.png"
 
 
 //hello me 
@@ -74,7 +79,9 @@ let randomEnemyY = Math.floor(Math.random() * (canvasGame.height - 50))
 
 let enemies = [];
 let enemyBullets = [];
-let healHeart = []
+let healHeart = [];
+let bosscannon1 = [];
+let bosscannon2 = [];
 
 //...............................................................................................................
 healHeart[0] = {
@@ -117,7 +124,7 @@ function keyDownHandler(e) {
         w_delay = 100
 
     }
-    else if (e.keyCode == 13) {
+    else if (e.keyCode === 13) {
         reloadButton = true;
     }
 }
@@ -135,11 +142,11 @@ function keyUpHandler(e) {
     else if (e.keyCode === 39) {
         leftPressed = false;
     }
-    else if (e.keyCode == '32') {
+    else if (e.keyCode == 32) {
         pressedSpace = false;
         w_delay = 0;
     }
-    else if (e.keyCode == 13) {
+    else if (e.keyCode === 13) {
         reloadButton = false;
     }
 }
@@ -169,38 +176,6 @@ class Bullet {
 
 
 }
-
-
-
-// fillRect не требует openPath!
-
-
-
-
-
-
-
-/*const enemies = [];
-function spawnEnemy(){
-    
-    
-
-    // Generate a random x position.
-    let randomXPosition = canvasGame.width - 100
-    
-    // Generate a random y position.
-    let randomYPosition = Math.floor(Math.random() * canvasGame.height) + 1;
-    
-    //Create a new Enemy instance and use above coordinates to place it in a random spot.
-    //Fill the rest of this object like you did with var bullet = {...}.
-    let  newEnemy = {
-        xPosition: randomXPosition,
-        yPosition: randomYPosition
-    };
-    enemies.push(newEnemy);
-    ctx.drawImage(enemy , randomXPosition , randomYPosition )
-}
-*/
 
 //Рендер объектов ..............................................................................
 
@@ -317,9 +292,61 @@ function draw() {
     if (score >= 5000) {
         mssn = "Defeat the Titan"
         ctx.drawImage(boss, bossX, bossY)
+        spawnInterval = 5000
         bossX -= bossSpeedX
-        
-            
+//cannon 1...........................................................................
+        for (let bb = 0; bb < bosscannon1.length; bb++) {
+            cannon1ShotX = bossX - 10
+            cannon1ShotY = bossY + 20
+
+            ctx.drawImage(bossB1, bosscannon1[bb].x, bosscannon1[bb].y)
+            bosscannon1[bb].x -= 1
+            if (bosscannon1[bb].x < 0 && bosscannon1[bb].x > canvasGame.width) {
+                bosscannon1.splice(bb, 1);
+            }
+            if(bossHP === 0){
+                bosscannon1[bb].x = 1000
+                bosscannon1[bb].y = 1000
+                if (bosscannon1[bb].x < canvasGame.width){
+                    bosscannon1.splice(bb, 1);
+                }
+            }
+            if (bosscannon1[bb].x <= xPos + ship.width - 10
+                && bosscannon1[bb].x + enBullet.width - 10 >= xPos
+                && bosscannon1[bb].y <= yPos + ship.height - 10
+                && bosscannon1[bb].y + enBullet.height - 10 >= yPos) {
+                bosscannon1.splice(bb, 1)
+                playerHP -= 25
+            }
+        }
+//cannon 2........................................................................        
+        for (let bd = 0; bd < bosscannon2.length; bd++) {
+            cannon2ShotX = bossX - 10
+            cannon2ShotY = bossY + 80
+
+            ctx.drawImage(bossB2, bosscannon2[bd].x, bosscannon2[bd].y)
+            bosscannon2[bd].x -= 1
+            if (bosscannon2[bd].x < 0 && bosscannon2[bd].x > canvasGame.width) {
+                bosscannon2.splice(bd, 1);
+            }
+            if(bossHP === 0){
+                
+                bosscannon2[bd].x = 1000
+                bosscannon2[bd].y = 1000
+                if (bosscannon2[bd].x < canvasGame.width){
+                    bosscannon2.splice(bb, 1);
+                }
+            }
+            if ( bosscannon2[bd].x <= xPos + ship.width - 10
+                &&  bosscannon2[bd].x + enBullet.width - 10 >= xPos
+                &&  bosscannon2[bd].y <= yPos + ship.height - 10
+                &&  bosscannon2[bd].y + enBullet.height - 10 >= yPos) {
+                bosscannon2.splice(bd, 1)
+                playerHP -= 25
+            }
+        }
+
+//...........................................................................................................................
         if (bossHP >= 0) {
             ctx.font = "16px Trebuchet MS";
             ctx.fillStyle = "#ffffff";
@@ -336,11 +363,12 @@ function draw() {
                 bossSpeedY = 1
             }
         }
-        spawnInterval = 5000
+
         if (bossHP === 0) {
             bossSpeedX = -1
             ctx.clearRect(canvasGame.width / 2, 25, 20, 10)
             score += 5000
+           
         }
     }
     //Cчет .........................................................................................
@@ -364,14 +392,14 @@ function draw() {
 
 
     //Game Over ...................................................................................
-    if (playerHP < 0) {
-       playerLv -= 1
-       playerHP = 100
-       xPos = 10
-       yPos = canvasGame.height / 2
+    if (playerHP <= 0) {
+        playerLv -= 1
+        playerHP = 100
+        xPos = 10
+        yPos = canvasGame.height / 2
 
     }
-    if(playerLv <= 0){
+    if (playerLv < 0) {
         xPos = 1000
         yPos = 1000
         ctx.font = "40px Arial"
@@ -414,7 +442,7 @@ function draw() {
 
 
     }
-    if (reloadButton && playerHP <= 0) {
+    if (reloadButton && playerLv <= 0) {
         location.reload();
     }
 
@@ -455,5 +483,22 @@ setInterval(function () {
         y: Math.floor(Math.random() * (canvasGame.height - 50))
     })
 }, 30000)
+setInterval(function () {
+    cannon1ShotX = bossX - 10
+    cannon1ShotY = bossY + 20
+
+    bosscannon1.push({
+        x: cannon1ShotX,
+        y: cannon1ShotY
+    })
+    cannon2ShotX = bossX - 10
+    cannon2ShotY = bossY + 240
+
+    bosscannon2.push({
+            x: cannon2ShotX,
+            y: cannon2ShotY
+    })
+    
+}, 2000)
 
 
