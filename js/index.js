@@ -291,7 +291,7 @@ function draw() {
 
         }
     }
-    if (score >= 50) {
+    if (score >= 5000) {
         mssn = "Defeat the Titan"
         ctx.drawImage(boss, bossX, bossY)
         spawnInterval = 5000
