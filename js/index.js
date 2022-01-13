@@ -191,65 +191,67 @@ function draw() {
     //Спавн Противников ............................................................................
 
 
+    if (bossHP > 0) {
+        for (let i = 0; i < enemies.length; i++) {
 
-    for (let i = 0; i < enemies.length; i++) {
+            ctx.drawImage(enemy, enemies[i].x, enemies[i].y)
 
-        ctx.drawImage(enemy, enemies[i].x, enemies[i].y)
+            enemies[i].x -= 2
 
-        enemies[i].x -= 2
+            //Враг диспавнится после конца экрана.......................................................................
+            if ((enemies[i].x + 50) < 0) {
+                enemies.splice(i, 1)
 
-        //Враг диспавнится после конца экрана.......................................................................
-        if ((enemies[i].x + 50) < 0) {
-            enemies.splice(i, 1)
+            }
 
-        }
+            //Колизия ...................................................................................
+            for (let j = 0; j < bullets.length; j++) {
 
-        //Колизия ...................................................................................
-        for (let j = 0; j < bullets.length; j++) {
+                if (bullets[j].x <= enemies[i].x + enemy.width
+                    && bullets[j].x + shot.width >= enemies[i].x
+                    && bullets[j].y <= enemies[i].y + enemy.height
+                    && bullets[j].y + shot.height >= enemies[i].y) {
 
-            if (bullets[j].x <= enemies[i].x + enemy.width
-                && bullets[j].x + shot.width >= enemies[i].x
-                && bullets[j].y <= enemies[i].y + enemy.height
-                && bullets[j].y + shot.height >= enemies[i].y) {
+                    bullets.splice(j, 1);
+                    enemies[i].hp -= 10
+                    if (enemies[i].hp === 0) {
+                        enemies.splice(i, 1)
+                        score += 100
 
-                bullets.splice(j, 1);
-                enemies[i].hp -= 10
-                if (enemies[i].hp === 0) {
-                    enemies.splice(i, 1)
-                    score += 100
+                    }
 
                 }
+                if (bullets[j].x > spawnTrigger) {
+                    bullets.splice(j, 1);
+                }
+                if (bullets[j].x <= bossX + boss.width
+                    && bullets[j].x + shot.width >= bossX
+                    && bullets[j].y <= bossY + boss.height
+                    && bullets[j].y + shot.height >= bossY) {
+                    bullets.splice(j, 1);
+                    bossHP -= 10
+                }
+
 
             }
-            if (bullets[j].x > spawnTrigger) {
-                bullets.splice(j, 1);
+
+
+            //Колизия вражеского выстрела ..............................................................................
+
+            //Колизия кораблей .........................................................................................
+            if (xPos <= enemies[i].x + enemy.width - 10
+                && xPos + ship.width - 10 >= enemies[i].x
+                && yPos <= enemies[i].y + enemy.height - 10
+                && yPos + ship.height - 10 >= enemies[i].y) {
+                enemies.splice(i, 1)
+                score += 100
+                playerHP -= 50
             }
-            if (bullets[j].x <= bossX + boss.width
-                && bullets[j].x + shot.width >= bossX
-                && bullets[j].y <= bossY + boss.height
-                && bullets[j].y + shot.height >= bossY) {
-                bullets.splice(j, 1);
-                bossHP -= 10
-            }
+
 
 
         }
-        //Колизия вражеского выстрела ..............................................................................
-
-        //Колизия кораблей .........................................................................................
-        if (xPos <= enemies[i].x + enemy.width - 10
-            && xPos + ship.width - 10 >= enemies[i].x
-            && yPos <= enemies[i].y + enemy.height - 10
-            && yPos + ship.height - 10 >= enemies[i].y) {
-            enemies.splice(i, 1)
-            score += 100
-            playerHP -= 50
-        }
-
-
-
     }
-
     //Выстрел противника .................................................................................
 
     for (let i = 0; i < enemies.length; i++) {
@@ -289,64 +291,53 @@ function draw() {
 
         }
     }
-    if (score >= 5000) {
+    if (score >= 50) {
         mssn = "Defeat the Titan"
         ctx.drawImage(boss, bossX, bossY)
         spawnInterval = 5000
         bossX -= bossSpeedX
-//cannon 1...........................................................................
-        for (let bb = 0; bb < bosscannon1.length; bb++) {
-            cannon1ShotX = bossX - 10
-            cannon1ShotY = bossY + 20
+        //cannon 1...........................................................................
+        if (bossX <= spawnTrigger) {
 
-            ctx.drawImage(bossB1, bosscannon1[bb].x, bosscannon1[bb].y)
-            bosscannon1[bb].x -= 1
-            if (bosscannon1[bb].x < 0 && bosscannon1[bb].x > canvasGame.width) {
-                bosscannon1.splice(bb, 1);
-            }
-            if(bossHP === 0){
-                bosscannon1[bb].x = 1000
-                bosscannon1[bb].y = 1000
-                if (bosscannon1[bb].x < canvasGame.width){
+            for (let bb = 0; bb < bosscannon1.length; bb++) {
+                cannon1ShotX = bossX - 10
+                cannon1ShotY = bossY + 20
+
+                ctx.drawImage(bossB1, bosscannon1[bb].x, bosscannon1[bb].y)
+                bosscannon1[bb].x -= 1
+                if (bosscannon1[bb].x < 0 && bosscannon1[bb].x > canvasGame.width) {
                     bosscannon1.splice(bb, 1);
                 }
-            }
-            if (bosscannon1[bb].x <= xPos + ship.width - 10
-                && bosscannon1[bb].x + enBullet.width - 10 >= xPos
-                && bosscannon1[bb].y <= yPos + ship.height - 10
-                && bosscannon1[bb].y + enBullet.height - 10 >= yPos) {
-                bosscannon1.splice(bb, 1)
-                playerHP -= 25
-            }
-        }
-//cannon 2........................................................................        
-        for (let bd = 0; bd < bosscannon2.length; bd++) {
-            cannon2ShotX = bossX - 10
-            cannon2ShotY = bossY + 80
 
-            ctx.drawImage(bossB2, bosscannon2[bd].x, bosscannon2[bd].y)
-            bosscannon2[bd].x -= 1
-            if (bosscannon2[bd].x < 0 && bosscannon2[bd].x > canvasGame.width) {
-                bosscannon2.splice(bd, 1);
-            }
-            if(bossHP === 0){
-                
-                bosscannon2[bd].x = 1000
-                bosscannon2[bd].y = 1000
-                if (bosscannon2[bd].x < canvasGame.width){
-                    bosscannon2.splice(bb, 1);
+                if (bosscannon1[bb].x <= xPos + ship.width - 10
+                    && bosscannon1[bb].x + enBullet.width - 10 >= xPos
+                    && bosscannon1[bb].y <= yPos + ship.height - 10
+                    && bosscannon1[bb].y + enBullet.height - 10 >= yPos) {
+                    bosscannon1.splice(bb, 1)
+                    playerHP -= 25
                 }
             }
-            if ( bosscannon2[bd].x <= xPos + ship.width - 10
-                &&  bosscannon2[bd].x + enBullet.width - 10 >= xPos
-                &&  bosscannon2[bd].y <= yPos + ship.height - 10
-                &&  bosscannon2[bd].y + enBullet.height - 10 >= yPos) {
-                bosscannon2.splice(bd, 1)
-                playerHP -= 25
+            //cannon 2........................................................................ 
+            for (let bd = 0; bd < bosscannon2.length; bd++) {
+                cannon2ShotX = bossX - 10
+                cannon2ShotY = bossY + 80
+
+                ctx.drawImage(bossB2, bosscannon2[bd].x, bosscannon2[bd].y)
+                bosscannon2[bd].x -= 1
+                if (bosscannon2[bd].x < 0 && bosscannon2[bd].x > canvasGame.width) {
+                    bosscannon2.splice(bd, 1);
+                }
+
+                if (bosscannon2[bd].x <= xPos + ship.width - 10
+                    && bosscannon2[bd].x + enBullet.width - 10 >= xPos
+                    && bosscannon2[bd].y <= yPos + ship.height - 10
+                    && bosscannon2[bd].y + enBullet.height - 10 >= yPos) {
+                    bosscannon2.splice(bd, 1)
+                    playerHP -= 25
+                }
             }
         }
-
-//...........................................................................................................................
+        //...........................................................................................................................
         if (bossHP >= 0) {
             ctx.font = "16px Trebuchet MS";
             ctx.fillStyle = "#ffffff";
@@ -367,8 +358,10 @@ function draw() {
         if (bossHP === 0) {
             bossSpeedX = -1
             ctx.clearRect(canvasGame.width / 2, 25, 20, 10)
-            score += 5000
-           
+
+            if (bossX > canvasGame.width) {
+                ctx.clearRect(bossX, bossY, boss.width, boss.height)
+            }
         }
     }
     //Cчет .........................................................................................
@@ -410,12 +403,23 @@ function draw() {
         ctx.fillStyle = "#ffffff"
         ctx.fillText("Press ENTER to try again", canvasGame.width / 2 - 150, canvasGame.height / 2 + 100)
     }
-    if (score >= 10000 && bossHP === 0) {
-        xPos += 10
+    if (bossHP === 0) {
+
         playerHP = 1000
+        ctx.beginPath();
+        ctx.arc(xPos + 35, yPos + 35, ship.width / 2, 0, Math.PI * 2, true); // Внешняя окружность
+        ctx.moveTo(xPos, yPos);
+        ctx.fill();
+        xPos = 1000
+        yPos = 1000
+
+
+
         ctx.font = "40px Arial"
         ctx.fillStyle = "#ffffff"
         ctx.fillText("MISSION COMPLETE", canvasGame.width / 2 - 150, canvasGame.height / 2)
+
+
     }
 
 
@@ -442,7 +446,7 @@ function draw() {
 
 
     }
-    if (reloadButton && playerLv <= 0) {
+    if (reloadButton && playerLv <= 0 || bossHP === 0) {
         location.reload();
     }
 
@@ -469,14 +473,15 @@ setInterval(function () {
         shotPosX = enemies[i].x - 50
         shotPosY = enemies[i].y + 35
 
+        if (enemies[i].x <= spawnTrigger) {
+            enemyBullets.push({
+                x: shotPosX,
+                y: shotPosY,
 
-        enemyBullets.push({
-            x: shotPosX,
-            y: shotPosY,
-
-        })
+            })
+        }
     }
-}, spawnInterval)
+}, 1000)
 setInterval(function () {
     healHeart.push({
         x: heartX,
@@ -495,10 +500,10 @@ setInterval(function () {
     cannon2ShotY = bossY + 240
 
     bosscannon2.push({
-            x: cannon2ShotX,
-            y: cannon2ShotY
+        x: cannon2ShotX,
+        y: cannon2ShotY
     })
-    
+
 }, 2000)
 
 
