@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { game } from "./scripts/js/index";
 
 function App() {
- const canvasRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     let cleanup;
@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div>
- 
+      <button onClick={() => window.location.reload()}>Restart Game</button>
       <canvas
         ref={canvasRef}
         width={800}
