@@ -12,10 +12,13 @@ import bossB1Src from "../img/bossshot11.png";
 import bossB2Src from "../img/bossshot22.png";
 import shotLazerSrc from "../audio/lazerShot.wav";
 import musicSrc from "../audio/cosm.mp3";
+import newBg from "../img/bg.jpg";
+import planetGif from "../img/planet.gif";
 import { bossFunctional } from "./boss.js";
 import { enemyLogic } from "./enemyLogic.js";
 import { pickUps } from "./pickUp.js";
-import { hub } from "./hud.js";
+import { hud } from "./hud.js";
+import { planets } from "./planets.js";
 
 export function game(canvas, musicEnabledRef) {
   if (!canvas) return;
@@ -25,7 +28,7 @@ export function game(canvas, musicEnabledRef) {
   const ship = new Image();
   ship.src = shipSrc;
   const bg = new Image();
-  bg.src = bgSrc;
+  bg.src = newBg;
   const enemy = new Image();
   enemy.src = enemySrc;
   const shot = new Image();
@@ -53,12 +56,21 @@ export function game(canvas, musicEnabledRef) {
   music.loop = true;
   music.volume = 0.2;
 
-  // Game state
+  //  Positions----------------------------------
+
   let bossSpeedX = 1,
     bossSpeedY = 1;
   let w_delay = 0;
   let xPos = 10;
   let yPos = canvas.height / 2;
+  let heartX = canvas.width;
+  let heartY = Math.floor(Math.random() * canvas.height);
+  let enemyX = canvas.width,
+    enemyY = canvas.height / 2;
+  let bossX = canvas.width,
+    bossY = canvas.height - 400;
+
+  // Buttons--------------------------------------
   let upPressed = false,
     downPressed = false,
     rightPressed = false,
@@ -67,19 +79,18 @@ export function game(canvas, musicEnabledRef) {
     reloadButton = false;
   let cvertcanvasa = canvas.width / 4;
   let spawnTrigger = canvas.width - cvertcanvasa;
+
+  // Info--------------------------------------
   let score = 0;
-  let heartX = canvas.width;
-  let heartY = Math.floor(Math.random() * canvas.height);
-  let playerLv = 3;
   let mssn = "Gain 5000 points";
+  let playerLv = 3;
+
   let playerHP = 100,
     fighterHP = 20,
     bossHP = 1000;
-  let enemyX = canvas.width,
-    enemyY = canvas.height / 2;
-  let bossX = canvas.width,
-    bossY = canvas.height - 400;
   let spawnInterval = 2000;
+
+  //  Enemies and pickups --------------------------------------
   let enemies = [{ x: enemyX, y: enemyY, hp: fighterHP }];
   let enemyBullets = [];
   let healHeart = [{ x: heartX, y: heartY }];
@@ -88,6 +99,20 @@ export function game(canvas, musicEnabledRef) {
   let bullets = [];
   let bossDefeated = false;
   let shipLeaving = false;
+
+  // Bullet class
+
+  class Bullet {
+    constructor() {
+      this.x = xPos + 50;
+      this.y = yPos + 35;
+      bullets.push(this);
+    }
+    draw() {
+      this.x += 4;
+      ctx.drawImage(shot, this.x + 10, this.y, 54, 9);
+    }
+  }
 
   // Key handlers
   function keyDownHandler(e) {
@@ -101,7 +126,6 @@ export function game(canvas, musicEnabledRef) {
       shotSound.play();
       pressedSpace = true;
       w_delay = 100;
-      console.log(score);
     } else if (e.keyCode === 13) reloadButton = true;
   }
   function keyUpHandler(e) {
@@ -115,23 +139,47 @@ export function game(canvas, musicEnabledRef) {
     } else if (e.keyCode === 13) reloadButton = false;
   }
 
-  // Bullet class
-  class Bullet {
-    constructor() {
-      this.x = xPos + 50;
-      this.y = yPos + 35;
-      bullets.push(this);
-    }
-    draw() {
-      this.x += 4;
-      ctx.drawImage(shot, this.x + 10, this.y, 54, 9);
-    }
-  }
-
   // Draw function
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+    // planets(canvas, ctx); need to be fixed
+
+    const lines = [];
+    const count = 25;
+
+    for (let i = 0; i < count; i++) {
+      lines.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 2 + 2,
+      });
+    }
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.lineWidth = 1;
+
+    for (let line of lines) {
+      ctx.beginPath();
+      ctx.moveTo(line.x, line.y);
+      ctx.lineTo(line.x + line.length, line.y);
+      ctx.stroke();
+
+      line.x -= line.speed;
+
+      // Recycle the line to the right when it leaves the left side
+      if (line.x + line.length < 0) {
+        line.x = canvas.width + Math.random() * 50;
+        line.y = Math.random() * canvas.height;
+        line.length = Math.random() * 20 + 10;
+        line.speed = Math.random() * 2 + 2;
+      }
+    }
+
     ctx.drawImage(ship, xPos, yPos);
 
     // Enemies
@@ -163,12 +211,14 @@ export function game(canvas, musicEnabledRef) {
     const pickUpsResults = pickUps(
       xPos,
       yPos,
-      healHeart,
       ctx,
+      ship,
+      healHeart,
+      playerHP,
       heal,
-      heartX,
-      heartY
+      enBullet
     );
+    console.log(pickUpsResults.playerHP);
     playerHP = pickUpsResults.playerHP;
 
     // Boss
@@ -204,7 +254,8 @@ export function game(canvas, musicEnabledRef) {
     bossSpeedX = bossResults.updatedBossSpeedX;
     bossSpeedY = bossResults.updatedBossSpeedY;
 
-    hub(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon);
+    // HUD
+    hud(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon);
 
     // Game Over
     if (playerHP <= 0) {

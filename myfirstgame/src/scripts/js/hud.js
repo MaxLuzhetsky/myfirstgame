@@ -1,4 +1,4 @@
-export function hub(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon) {
+export function hud(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon) {
   // Score, mission, HP, LV
   ctx.font = "16px Trebuchet MS";
   ctx.fillStyle = "#ffffff";

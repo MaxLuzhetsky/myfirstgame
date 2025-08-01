@@ -20,7 +20,7 @@ export function pickUps(
       healHeart[h].y + enBullet.height - 10 >= yPos
     ) {
       healHeart.splice(h, 1);
-      playerHP += 25;
+      updatedPlayerHP += 25;
     }
   }
   return {
