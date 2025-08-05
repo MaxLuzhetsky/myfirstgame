@@ -1,5 +1,4 @@
 import shipSrc from "../img/myship.png";
-import bgSrc from "../img/milky.jpg";
 import enemySrc from "../img/fighter.png";
 import shotSrc from "../img/laserBlue.png";
 import enBulletSrc from "../img/laserRed.png";
@@ -13,12 +12,10 @@ import bossB2Src from "../img/bossshot22.png";
 import shotLazerSrc from "../audio/lazerShot.wav";
 import musicSrc from "../audio/cosm.mp3";
 import newBg from "../img/bg.jpg";
-import planetGif from "../img/planet.gif";
 import { bossFunctional } from "./boss.js";
 import { enemyLogic } from "./enemyLogic.js";
 import { pickUps } from "./pickUp.js";
 import { hud } from "./hud.js";
-import { planets } from "./planets.js";
 
 export function game(canvas, musicEnabledRef) {
   if (!canvas) return;
@@ -143,10 +140,13 @@ export function game(canvas, musicEnabledRef) {
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Background
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+    // HUD
+    hud(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon);
 
-    // planets(canvas, ctx); need to be fixed
+    // // Background
+    // ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+    //  planets(canvas, ctx);
 
     const lines = [];
     const count = 25;
@@ -253,9 +253,6 @@ export function game(canvas, musicEnabledRef) {
     bossY = bossResults.updatedBossY;
     bossSpeedX = bossResults.updatedBossSpeedX;
     bossSpeedY = bossResults.updatedBossSpeedY;
-
-    // HUD
-    hud(score, mssn, playerHP, playerLv, ctx, hpIcon, lvIcon);
 
     // Game Over
     if (playerHP <= 0) {

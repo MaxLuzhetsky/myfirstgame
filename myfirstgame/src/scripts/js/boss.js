@@ -29,7 +29,7 @@ export function bossFunctional(
   let updatedBossSpeedX = bossSpeedX;
   let updatedBossSpeedY = bossSpeedY;
 
-  if (score >= 500) {
+  if (score >= 5000) {
     mssn = "Defeat the Titan";
     ctx.drawImage(boss, updatedBossX, updatedBossY);
     spawnInterval = 5000;

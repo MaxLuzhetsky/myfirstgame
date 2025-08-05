@@ -1,64 +1,65 @@
 import planetSheet from "../img/planet-spritesheet.png";
 
-export function planets(canvas, ctx) {
-  const sprite = new Image();
-  sprite.src = planetSheet; // your spritesheet URL
+export function planets(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
 
-  // Spritesheet settings
-  // Frame details
-  const frameWidth = 100;
-  const frameHeight = 100;
-  const numFrames = 10;
+  const sprite = new Image();
+  sprite.src = planetSheet;
+
+  const frameWidth = sprite.width / 41;
+  const frameHeight = sprite.height;
+  const numFrames = 41;
 
   let currentFrame = 0;
-  const fps = 10;
-  const interval = 1000 / fps;
+  let framesDrawn = 0;
 
   let x = canvas.width;
   let y = getRandomY();
-
-  const speedX = 2;
+  const speedX = 1.5;
 
   function getRandomY() {
     return Math.random() * (canvas.height - frameHeight);
   }
 
   sprite.onload = () => {
-    let lastTime = 0;
-
-    function animate(timestamp) {
-      if (timestamp - lastTime >= interval) {
-        lastTime = timestamp;
-
-        // Get X from sprite sheet (assumes horizontal layout)
-        const sx = currentFrame * frameWidth;
-        const sy = 0;
-
-        ctx.drawImage(
-          sprite,
-          sx,
-          sy, // Crop start point in source image
-          frameWidth,
-          frameHeight, // Crop size
-          x,
-          y, // Position on canvas
-          frameWidth,
-          frameHeight // Draw size
-        );
-
-        currentFrame = (currentFrame + 1) % numFrames;
-        x -= speedX;
-
-        // Restart when offscreen
-        if (x + frameWidth < 0) {
-          x = canvas.width;
-          y = getRandomY();
-        }
-      }
-
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       requestAnimationFrame(animate);
-    }
 
-    requestAnimationFrame(animate);
+      // ctx.strokeStyle = "red";
+      // ctx.strokeRect(x, y, frameWidth, frameHeight);  to see the sprite bounds
+
+      currentFrame = currentFrame % numFrames;
+
+      const sx = currentFrame * frameWidth;
+      const sy = 0;
+
+      ctx.filter = "blur(4px)";
+      ctx.drawImage(
+        sprite,
+        sx,
+        sy,
+        frameWidth,
+        frameHeight,
+        x,
+        y,
+        frameWidth,
+        frameHeight
+      );
+
+      framesDrawn++;
+      if (framesDrawn >= 10) {
+        currentFrame++;
+        framesDrawn = 0;
+      }
+      x -= speedX;
+
+      if (x + frameWidth < 0) {
+        x = canvas.width;
+        y = getRandomY();
+      }
+    }
+    animate();
   };
 }
