@@ -1,4 +1,10 @@
 import planetSheet from "../img/planet-spritesheet.png";
+import planet1 from "../img/iceplanet.png";
+import planet2 from "../img/deadplanet.png";
+import planet3 from "../img/earthlikeplanet.png";
+import planet4 from "../img/earthlike.png";
+
+const planetImages = [planetSheet, planet1, planet2, planet3, planet4];
 
 export function planets(canvas) {
   if (!canvas) return;

@@ -97,20 +97,6 @@ export function game(canvas, musicEnabledRef) {
   let bossDefeated = false;
   let shipLeaving = false;
 
-  // Bullet class
-
-  class Bullet {
-    constructor() {
-      this.x = xPos + 50;
-      this.y = yPos + 35;
-      bullets.push(this);
-    }
-    draw() {
-      this.x += 4;
-      ctx.drawImage(shot, this.x + 10, this.y, 54, 9);
-    }
-  }
-
   // Key handlers
   function keyDownHandler(e) {
     if (e.keyCode === 38) upPressed = true;
@@ -180,7 +166,7 @@ export function game(canvas, musicEnabledRef) {
       }
     }
 
-    ctx.drawImage(ship, xPos, yPos);
+
 
     // Enemies
     const result = enemyLogic(
@@ -218,7 +204,7 @@ export function game(canvas, musicEnabledRef) {
       heal,
       enBullet
     );
-    console.log(pickUpsResults.playerHP);
+    
     playerHP = pickUpsResults.playerHP;
 
     // Boss
@@ -303,7 +289,23 @@ export function game(canvas, musicEnabledRef) {
       );
     }
 
+    // Bullet class
+
+    class Bullet {
+      constructor() {
+        this.x = xPos + 25;
+        this.y = yPos + 35;
+        bullets.push(this);
+      }
+      draw() {
+        this.x += 4;
+        ctx.drawImage(shot, this.x + 10, this.y, 54, 9);
+      }
+    }
+
     bullets.forEach((bullet) => bullet.draw());
+
+      ctx.drawImage(ship, xPos, yPos);
 
     // Player movement
     if (upPressed && yPos > 0) yPos -= 4;

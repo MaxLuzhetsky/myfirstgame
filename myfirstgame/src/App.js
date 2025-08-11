@@ -2,9 +2,11 @@ import React, { useRef, useEffect } from "react";
 import { game } from "./scripts/js/index";
 import { Background } from "./scripts/js/background";
 import { planets } from "./scripts/js/planets";
+import { star } from "./scripts/js/star"; // Assuming stars function is exported from bullets.js
 
 function App() {
   const backgroundRef = useRef(null);
+  const starRef = useRef(null);
   const planetsRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -12,6 +14,9 @@ function App() {
     let cleanup;
     if (backgroundRef.current) {
       Background(backgroundRef.current);
+    }
+    if (starRef.current) {
+      star(starRef.current);
     }
     if (planetsRef.current) {
       planets(planetsRef.current);
@@ -32,7 +37,7 @@ function App() {
       <button onClick={() => window.location.reload()}>Restart Game</button>
       <canvas
         ref={backgroundRef}
-        width={800}
+        width={1500}
         height={600}
         style={{
           border: "1px solid #fff",
@@ -42,9 +47,9 @@ function App() {
           zIndex: 0,
         }}
       />
-      <canvas
-        ref={planetsRef}
-        width={800}
+        <canvas
+        ref={starRef}
+        width={1500}
         height={600}
         style={{
           border: "1px solid #fff",
@@ -55,15 +60,27 @@ function App() {
         }}
       />
       <canvas
-        ref={canvasRef}
-        width={800}
+        ref={planetsRef}
+        width={1500}
         height={600}
         style={{
           border: "1px solid #fff",
           position: "absolute",
           top: 0,
           left: 0,
-          zIndex: 1,
+          zIndex: 2,
+        }}
+      />
+      <canvas
+        ref={canvasRef}
+        width={1500}
+        height={600}
+        style={{
+          border: "1px solid #fff",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 3,
         }}
       />
     </div>
