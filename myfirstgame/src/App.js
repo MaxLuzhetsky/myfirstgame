@@ -1,10 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { game } from "./scripts/js/index";
 import { Background } from "./scripts/js/background";
 import { planets } from "./scripts/js/planets";
 import { star } from "./scripts/js/star"; // Assuming stars function is exported from bullets.js
+import { Joystick } from "react-joystick-component";
 
 function App() {
+  const [joystick, setJoystick] = useState({});
   const backgroundRef = useRef(null);
   const starRef = useRef(null);
   const planetsRef = useRef(null);
@@ -12,17 +14,15 @@ function App() {
 
   useEffect(() => {
     let cleanup;
-    if (backgroundRef.current) {
-      Background(backgroundRef.current);
-    }
-    if (starRef.current) {
+
+    if (backgroundRef.current && starRef.current && planetsRef.current) {
       star(starRef.current);
-    }
-    if (planetsRef.current) {
+      Background(backgroundRef.current);
       planets(planetsRef.current);
     }
+
     if (canvasRef.current) {
-      cleanup = game(canvasRef.current);
+      cleanup = game(canvasRef.current, joystick);
     }
 
     return () => {
@@ -33,57 +33,75 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <button onClick={() => window.location.reload()}>Restart Game</button>
-      <canvas
-        ref={backgroundRef}
-        width={1500}
-        height={600}
-        style={{
-          border: "1px solid #fff",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 0,
-        }}
-      />
+    <>
+      <div>
         <canvas
-        ref={starRef}
-        width={1500}
-        height={600}
+          ref={backgroundRef}
+          width={1500}
+          height={600}
+          style={{
+            border: "1px solid #fff",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 0,
+          }}
+        />
+        <canvas
+          ref={starRef}
+          width={1500}
+          height={600}
+          style={{
+            border: "1px solid #fff",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        />
+        <canvas
+          ref={planetsRef}
+          width={1500}
+          height={600}
+          style={{
+            border: "1px solid #fff",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 2,
+          }}
+        />
+        <canvas
+          ref={canvasRef}
+          width={1500}
+          height={600}
+          style={{
+            border: "1px solid #fff",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 3,
+          }}
+        />
+      </div>
+
+      <div
         style={{
           border: "1px solid #fff",
           position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 1,
-        }}
-      />
-      <canvas
-        ref={planetsRef}
-        width={1500}
-        height={600}
-        style={{
-          border: "1px solid #fff",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 2,
-        }}
-      />
-      <canvas
-        ref={canvasRef}
-        width={1500}
-        height={600}
-        style={{
-          border: "1px solid #fff",
-          position: "absolute",
-          top: 0,
+          top: 450,
           left: 0,
           zIndex: 3,
         }}
-      />
-    </div>
+      >
+        <button onClick={() => window.location.reload()}>Restart Game</button>
+        <Joystick
+          move={(e) => {
+            setJoystick(e)
+          }}
+        />
+      </div>
+    </>
   );
 }
 

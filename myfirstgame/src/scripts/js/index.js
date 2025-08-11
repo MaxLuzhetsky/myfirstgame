@@ -17,7 +17,7 @@ import { enemyLogic } from "./enemyLogic.js";
 import { pickUps } from "./pickUp.js";
 import { hud } from "./hud.js";
 
-export function game(canvas, musicEnabledRef) {
+export function game(canvas, musicEnabledRef, joystick) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
