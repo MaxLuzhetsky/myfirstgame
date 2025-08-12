@@ -17,7 +17,7 @@ import { enemyLogic } from "./enemyLogic.js";
 import { pickUps } from "./pickUp.js";
 import { hud } from "./hud.js";
 
-export function game(canvas, musicEnabledRef, joystick) {
+export function game(canvas, joystick) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
@@ -166,8 +166,6 @@ export function game(canvas, musicEnabledRef, joystick) {
       }
     }
 
-
-
     // Enemies
     const result = enemyLogic(
       bossHP,
@@ -204,7 +202,7 @@ export function game(canvas, musicEnabledRef, joystick) {
       heal,
       enBullet
     );
-    
+
     playerHP = pickUpsResults.playerHP;
 
     // Boss
@@ -305,7 +303,7 @@ export function game(canvas, musicEnabledRef, joystick) {
 
     bullets.forEach((bullet) => bullet.draw());
 
-      ctx.drawImage(ship, xPos, yPos);
+    ctx.drawImage(ship, xPos, yPos);
 
     // Player movement
     if (upPressed && yPos > 0) yPos -= 4;
@@ -317,6 +315,19 @@ export function game(canvas, musicEnabledRef, joystick) {
       pressedSpace = false;
     }
     if ((reloadButton && playerLv <= 0) || bossHP === 0) {
+    }
+
+    if (joystick.current && (joystick.current.x || joystick.current.y)) {
+      // Move
+      xPos += joystick.current.x * 3;
+      yPos -= joystick.current.y * 4;
+
+      // Clamp to borders
+      if (xPos < 0) xPos = 0;
+      if (xPos > canvas.width - ship.width) xPos = canvas.width - ship.width;
+      if (yPos < 0) yPos = 0;
+      if (yPos > canvas.height - ship.height)
+        yPos = canvas.height - ship.height;
     }
   }
 
@@ -366,20 +377,11 @@ export function game(canvas, musicEnabledRef, joystick) {
   window.addEventListener("keydown", keyDownHandler);
   window.addEventListener("keyup", keyUpHandler);
 
-  // Music: play only after user interaction
-  function tryPlayMusic() {
-    if (musicEnabledRef && musicEnabledRef.current && music.paused) {
-      music.play().catch(() => {});
-    }
-  }
-  window.addEventListener("click", tryPlayMusic);
-
   // Cleanup for React
   return () => {
     intervals.forEach(clearInterval);
     window.removeEventListener("keydown", keyDownHandler);
     window.removeEventListener("keyup", keyUpHandler);
-    window.removeEventListener("click", tryPlayMusic);
     music.pause();
   };
 }

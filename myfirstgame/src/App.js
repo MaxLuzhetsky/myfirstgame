@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { game } from "./scripts/js/index";
 import { Background } from "./scripts/js/background";
 import { planets } from "./scripts/js/planets";
@@ -6,7 +6,7 @@ import { star } from "./scripts/js/star"; // Assuming stars function is exported
 import { Joystick } from "react-joystick-component";
 
 function App() {
-  const [joystick, setJoystick] = useState({});
+  const joystickRef = useRef({});
   const backgroundRef = useRef(null);
   const starRef = useRef(null);
   const planetsRef = useRef(null);
@@ -22,14 +22,10 @@ function App() {
     }
 
     if (canvasRef.current) {
-      cleanup = game(canvasRef.current, joystick);
+      cleanup = game(canvasRef.current, joystickRef);
     }
 
-    return () => {
-      if (cleanup) {
-        cleanup(); // ✅ clean up game loop
-      }
-    };
+    return () => cleanup && cleanup();
   }, []);
 
   return (
@@ -89,7 +85,7 @@ function App() {
         style={{
           border: "1px solid #fff",
           position: "absolute",
-          top: 450,
+          top: 400,
           left: 0,
           zIndex: 3,
         }}
@@ -97,8 +93,12 @@ function App() {
         <button onClick={() => window.location.reload()}>Restart Game</button>
         <Joystick
           move={(e) => {
-            setJoystick(e)
+            joystickRef.current = e
           }}
+          stop={() => {
+            joystickRef.current = {};
+          }}
+          size={200}
         />
       </div>
     </>
