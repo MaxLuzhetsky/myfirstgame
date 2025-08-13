@@ -12,6 +12,31 @@ function App() {
   const planetsRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const pressSpace = () => {
+    const keyDown = new KeyboardEvent("keydown", {
+      key: " ",
+      code: "Space",
+      keyCode: 32,
+      which: 32,
+      bubbles: true,
+    });
+
+    const keyUp = new KeyboardEvent("keyup", {
+      key: " ",
+      code: "Space",
+      keyCode: 32,
+      which: 32,
+      bubbles: true,
+    });
+
+    document.dispatchEvent(keyDown);
+
+    // small delay before keyup so it looks like a real press
+    setTimeout(() => {
+      document.dispatchEvent(keyUp);
+    }, 50);
+  };
+
   useEffect(() => {
     let cleanup;
 
@@ -88,18 +113,21 @@ function App() {
           top: 400,
           left: 0,
           zIndex: 3,
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <button onClick={() => window.location.reload()}>Restart Game</button>
         <Joystick
           move={(e) => {
-            joystickRef.current = e
+            joystickRef.current = e;
           }}
           stop={() => {
             joystickRef.current = {};
           }}
           size={200}
         />
+        <button onClick={pressSpace}>Press Space</button>
       </div>
     </>
   );
