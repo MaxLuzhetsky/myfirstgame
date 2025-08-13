@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/main/static/css/main.e6c13ad2.css",
-    "main.js": "/main/static/js/main.8f9a9887.js",
-    "static/js/453.70600eae.chunk.js": "/main/static/js/453.70600eae.chunk.js",
-    "static/media/cosm.mp3": "/main/static/media/cosm.c3e527d244d696ae3524.mp3",
-    "static/media/bg.jpg": "/main/static/media/bg.c731af7140d6760b9756.jpg",
-    "static/media/planet-spritesheet.png": "/main/static/media/planet-spritesheet.283db6c4b3dd11f637fa.png",
-    "static/media/star.png": "/main/static/media/star.ebad1bdddfb0ea4cb6b7.png",
-    "static/media/lazerShot.wav": "/main/static/media/lazerShot.c688a5f466c3d6f52836.wav",
-    "static/media/earthlike.png": "/main/static/media/earthlike.e143aac35e6f19e37760.png",
-    "static/media/earthlikeplanet.png": "/main/static/media/earthlikeplanet.ffd6b8f0bb544798d035.png",
-    "static/media/iceplanet.png": "/main/static/media/iceplanet.c19c8827d02456fde491.png",
-    "static/media/titan.png": "/main/static/media/titan.5a7607ade778063f5938.png",
-    "static/media/deadplanet.png": "/main/static/media/deadplanet.6bb350dc47f079fcfd41.png",
-    "index.html": "/main/index.html",
-    "main.e6c13ad2.css.map": "/main/static/css/main.e6c13ad2.css.map",
-    "main.8f9a9887.js.map": "/main/static/js/main.8f9a9887.js.map",
-    "453.70600eae.chunk.js.map": "/main/static/js/453.70600eae.chunk.js.map"
+    "main.css": "/myfirstgame/static/css/main.e6c13ad2.css",
+    "main.js": "/myfirstgame/static/js/main.bf7029d2.js",
+    "static/js/453.70600eae.chunk.js": "/myfirstgame/static/js/453.70600eae.chunk.js",
+    "static/media/cosm.mp3": "/myfirstgame/static/media/cosm.c3e527d244d696ae3524.mp3",
+    "static/media/bg.jpg": "/myfirstgame/static/media/bg.c731af7140d6760b9756.jpg",
+    "static/media/planet-spritesheet.png": "/myfirstgame/static/media/planet-spritesheet.283db6c4b3dd11f637fa.png",
+    "static/media/star.png": "/myfirstgame/static/media/star.ebad1bdddfb0ea4cb6b7.png",
+    "static/media/lazerShot.wav": "/myfirstgame/static/media/lazerShot.c688a5f466c3d6f52836.wav",
+    "static/media/earthlike.png": "/myfirstgame/static/media/earthlike.e143aac35e6f19e37760.png",
+    "static/media/earthlikeplanet.png": "/myfirstgame/static/media/earthlikeplanet.ffd6b8f0bb544798d035.png",
+    "static/media/iceplanet.png": "/myfirstgame/static/media/iceplanet.c19c8827d02456fde491.png",
+    "static/media/titan.png": "/myfirstgame/static/media/titan.5a7607ade778063f5938.png",
+    "static/media/deadplanet.png": "/myfirstgame/static/media/deadplanet.6bb350dc47f079fcfd41.png",
+    "index.html": "/myfirstgame/index.html",
+    "main.e6c13ad2.css.map": "/myfirstgame/static/css/main.e6c13ad2.css.map",
+    "main.bf7029d2.js.map": "/myfirstgame/static/js/main.bf7029d2.js.map",
+    "453.70600eae.chunk.js.map": "/myfirstgame/static/js/453.70600eae.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.8f9a9887.js"
+    "static/js/main.bf7029d2.js"
   ]
 }
