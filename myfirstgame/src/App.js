@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { game } from "./scripts/js/index";
 import { Background } from "./scripts/js/background";
 import { planets } from "./scripts/js/planets";
@@ -14,17 +14,28 @@ function App() {
   const canvasRef = useRef(null);
   const isTablet = useIsTablet();
 
-  const canvasWidth = window.innerWidth;
-  const canvasHeight = window.innerHeight;
-  const canvasStyle = {
-    width: canvasWidth,
-    height: canvasHeight,
-    border: "1px solid #fff",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    zIndex: 0,
-  };
+  // ✅ Keep canvas size in state so it updates on resize
+  const [canvasSize, setCanvasSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setCanvasSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
+  }, []);
 
   const pressSpace = () => {
     const keyDown = new KeyboardEvent("keydown", {
@@ -34,7 +45,6 @@ function App() {
       which: 32,
       bubbles: true,
     });
-
     const keyUp = new KeyboardEvent("keyup", {
       key: " ",
       code: "Space",
@@ -42,77 +52,70 @@ function App() {
       which: 32,
       bubbles: true,
     });
-
     document.dispatchEvent(keyDown);
-
-    // small delay before keyup so it looks like a real press
-    setTimeout(() => {
-      document.dispatchEvent(keyUp);
-    }, 50);
+    setTimeout(() => document.dispatchEvent(keyUp), 50);
   };
 
   useEffect(() => {
     let cleanup;
-
     if (backgroundRef.current && starRef.current && planetsRef.current) {
       star(starRef.current);
       Background(backgroundRef.current);
       planets(planetsRef.current);
     }
-
     if (canvasRef.current) {
       cleanup = game(canvasRef.current, joystickRef);
     }
-
     return () => cleanup && cleanup();
   }, []);
 
   useEffect(() => {
-    // Disable scrolling
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
     document.body.style.touchAction = "none";
-
     return () => {
-      // Restore scroll after cleanup
       document.body.style.overflow = originalStyle;
       document.body.style.touchAction = "auto";
     };
   }, []);
 
+  const canvasStyle = {
+    width: canvasSize.width,
+    height: canvasSize.height,
+    border: "1px solid #fff",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 0,
+  };
+
   return (
     <>
       <div
-        style={{
-          maxWidth: "1500px",
-          margin: "0 auto",
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-        }}
+        style={{ maxWidth: "1500px", position: "relative", display: "flex" }}
       >
         <canvas
           ref={backgroundRef}
-          width={canvasWidth}
-          height={canvasHeight}
+          width={canvasSize.width}
+          height={canvasSize.height}
           style={canvasStyle}
         />
         <canvas
           ref={starRef}
-          width={canvasWidth}
-          height={canvasHeight}
+          width={canvasSize.width}
+          height={canvasSize.height}
           style={{ ...canvasStyle, zIndex: 1 }}
         />
         <canvas
           ref={planetsRef}
-          width={canvasWidth}
-          height={canvasHeight}
+          width={canvasSize.width}
+          height={canvasSize.height}
           style={{ ...canvasStyle, zIndex: 2 }}
         />
         <canvas
           ref={canvasRef}
-          width={canvasWidth}
-          height={canvasHeight}
+          width={canvasSize.width}
+          height={canvasSize.height}
           style={{ ...canvasStyle, zIndex: 3 }}
         />
       </div>
@@ -126,6 +129,7 @@ function App() {
           width: "90%",
           justifyContent: "space-between",
           zIndex: 3,
+          touchAction: "none",
         }}
       >
         <div style={{ width: 200, height: 200 }}>
@@ -156,9 +160,10 @@ function App() {
           style={{
             width: isTablet ? "100px" : "200px",
             height: isTablet ? "100px" : "200px",
-            backgroundColor: "white",
+            backgroundColor: "rgb(61, 89, 171)",
             borderRadius: "50%",
             opacity: 0.8,
+            border: "none",
           }}
         >
           Press Space
